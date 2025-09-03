@@ -1,4 +1,5 @@
 #erDiagram
+
     USER {
         UUID user_id PK "Primary Key, Indexed"
         VARCHAR first_name "NOT NULL"
