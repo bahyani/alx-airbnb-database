@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Property Booking System - ER Diagram</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .diagram-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .info {
+            background: #e8f4fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2196F3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Property Booking System - Entity Relationship Diagram</h1>
+        
+        <div class="info">
+            <strong>Database Schema Overview:</strong><br>
+            This ER diagram represents a property rental/booking system with 6 main entities:
+            User, Property, Booking, Payment, Review, and Message.
+        </div>
+
+        <div class="diagram-container">
+            <div class="mermaid">
+erDiagram
+    USER {
+        UUID user_id PK "Primary Key, Indexed"
+        VARCHAR first_name "NOT NULL"
+        VARCHAR last_name "NOT NULL"
+        VARCHAR email "UNIQUE, NOT NULL, Indexed"
+        VARCHAR password_hash "NOT NULL"
+        VARCHAR phone_number "NULL"
+        ENUM role "guest|host|admin, NOT NULL"
+        TIMESTAMP created_at "DEFAULT CURRENT_TIMESTAMP"
+    }
+
+    PROPERTY {
+        UUID property_id PK "Primary Key, Indexed"
+        UUID host_id FK "Foreign Key → User"
+        VARCHAR name "NOT NULL"
+        TEXT description "NOT NULL"
+        VARCHAR location "NOT NULL"
+        DECIMAL price_per_night "NOT NULL"
+        TIMESTAMP created_at "DEFAULT CURRENT_TIMESTAMP"
+        TIMESTAMP updated_at "ON UPDATE CURRENT_TIMESTAMP"
+    }
+
+    BOOKING {
+        UUID booking_id PK "Primary Key, Indexed"
+        UUID property_id FK "Foreign Key → Property"
+        UUID user_id FK "Foreign Key → User"
+        DATE start_date "NOT NULL"
+        DATE end_date "NOT NULL"
+        DECIMAL total_price "NOT NULL"
+        ENUM status "pending|confirmed|canceled, NOT NULL"
+        TIMESTAMP created_at "DEFAULT CURRENT_TIMESTAMP"
+    }
+
+    PAYMENT {
+        UUID payment_id PK "Primary Key, Indexed"
+        UUID booking_id FK "Foreign Key → Booking"
+        DECIMAL amount "NOT NULL"
+        TIMESTAMP payment_date "DEFAULT CURRENT_TIMESTAMP"
+        ENUM payment_method "credit_card|paypal|stripe, NOT NULL"
+    }
+
+    REVIEW {
+        UUID review_id PK "Primary Key, Indexed"
+        UUID property_id FK "Foreign Key → Property"
+        UUID user_id FK "Foreign Key → User"
+        INTEGER rating "CHECK: rating >= 1 AND rating <= 5, NOT NULL"
+        TEXT comment "NOT NULL"
+        TIMESTAMP created_at "DEFAULT CURRENT_TIMESTAMP"
+    }
+
+    MESSAGE {
+        UUID message_id PK "Primary Key, Indexed"
+        UUID sender_id FK "Foreign Key → User"
+        UUID recipient_id FK "Foreign Key → User"
+        TEXT message_body "NOT NULL"
+        TIMESTAMP sent_at "DEFAULT CURRENT_TIMESTAMP"
+    }
+
+    %% Relationships
+    USER ||--o{ PROPERTY : "hosts (1:M)"
+    USER ||--o{ BOOKING : "makes (1:M)"
+    PROPERTY ||--o{ BOOKING : "is_booked (1:M)"
+    BOOKING ||--|| PAYMENT : "has_payment (1:1)"
+    USER ||--o{ REVIEW : "writes (1:M)"
+    PROPERTY ||--o{ REVIEW : "receives (1:M)"
+    USER ||--o{ MESSAGE : "sends (1:M)"
+    USER ||--o{ MESSAGE : "receives (1:M)"
+            </div>
+        </div>
+
+        <div class="info">
+            <strong>Key Relationships:</strong><br>
+            • User-Property: One user can host multiple properties<br>
+            • User-Booking: One user can make multiple bookings<br>
+            • Property-Booking: One property can have multiple bookings<br>
+            • Booking-Payment: Each booking has exactly one payment<br>
+            • User/Property-Review: Many-to-many through reviews<br>
+            • User-Message: Self-referencing for sender/recipient
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true
+            }
+        });
+    </script>
+</body>
+</html>
