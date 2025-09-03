@@ -1,7 +1,4 @@
 # alx-airbnb-database
-
-#Welcome to my project
-
 erDiagram
     USER {
         UUID user_id PK "Primary Key, Indexed"
