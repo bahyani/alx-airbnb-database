@@ -1,3 +1,5 @@
+-- INNER JOIN
+
 SELECT 
     b.booking_id,
     b.start_date,
