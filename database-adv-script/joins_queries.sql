@@ -10,7 +10,7 @@ SELECT
     u.last_name,
     u.email
 FROM booking b
-INNER JOIN user u ON b.user_id = u.user_id;
+INNER JOIN user u ON b.user_id = u.user_id ORDER BY b.booking_id;
 
 -- LEFT JOIN: All properties and their reviews (including properties with no reviews)
 SELECT 
@@ -21,7 +21,7 @@ SELECT
     r.rating,
     r.comment
 FROM property p
-LEFT JOIN review r ON p.property_id = r.property_id;
+LEFT JOIN review r ON p.property_id = r.property_id ORDER BY p.property_id;
 
 -- FULL OUTER JOIN: All users and all bookings (MySQL doesn't support FULL OUTER JOIN, so using UNION)
 SELECT 
@@ -44,4 +44,4 @@ SELECT
     b.start_date,
     b.total_price
 FROM user u
-RIGHT JOIN booking b ON u.user_id = b.user_id;
+RIGHT JOIN booking b ON u.user_id = b.user_id ORDER BY u.user_id;
